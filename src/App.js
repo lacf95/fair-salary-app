@@ -6,7 +6,7 @@ import Main from './Main.js';
 
 function App() {
   return (
-    <div className="App grid grid-rows-[auto_1fr_auto] h-full justify-items-center gap-y-4">
+    <div className="App grid grid-rows-[auto_1fr_auto] h-full justify-items-center gap-y-4 bg-stone-50">
       <Header />
       <Main />
       <Footer />

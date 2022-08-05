@@ -1,31 +1,86 @@
-const SalaryCalculator = () => (
-  <div className="w-full sm:w-96 grid grid-flow-row auto-rows-min gap-y-4">
-    <div className="w-full">
-      <h3 className="text-xl lg:text-2xl">Calcula el salario que deberías percibir</h3>
-    </div>
-    <div className="w-full">
-      <p>Fecha de obtención de tu último salario</p>
-      <div className="w-full grid sm:grid-flow-col sm:auto-cols-auto gap-y-4 sm:gap-x-4">
-        <select className="border-emerald-600">
-          <option>2022</option>
-          <option>2021</option>
-          <option>2020</option>
-        </select>
-        <select className="border-emerald-600">
-          <option>Enero</option>
-          <option>Febrero</option>
-          <option>Marzo</option>
-        </select>
+import * as R from 'ramda';
+import { useState, useEffect } from 'react';
+
+const SalaryCalculator = () => {
+  // Constants
+  const EARLIEST_YEAR = 1969;
+
+  // Helper functions
+  const setProperty = R.curry((setter, transform = R.identity) => R.compose(setter, transform, R.path(['target', 'value'])));
+  const monthName = R.compose(R.invoker(2, 'toLocaleString')('default', { month: 'long' }), R.constructN(2, Date)(EARLIEST_YEAR));
+
+  // States
+  const [years, setYears] = useState([]);
+  const months = R.range(0, 12);
+  const [year, setYear] = useState('');
+  const [month, setMonth] = useState('');
+  const [salary, setSalary] = useState(1);
+
+  // Efects
+  // Set years
+  useEffect(() => { R.compose(setYears, R.reverse, R.range(EARLIEST_YEAR), R.add(1), R.invoker(0, 'getFullYear'), R.constructN(0, Date))() }, []);
+
+  // Set year
+  useEffect(() => { R.compose(setYear, R.head)(years) }, [years]);
+
+  // Set month
+  useEffect(() => {
+    const now = new Date();
+
+    if (now.getFullYear() === year && (!month || now.getMonth() < month)) {
+      setMonth(now.getMonth());
+    }
+  }, [year, month]);
+
+  // Set salary
+  useEffect(() => { R.when(R.both(R.complement(R.isEmpty), R.lte(R.__, 0)), R.compose(setSalary, R.negate))(salary) }, [salary]);
+
+  // Render
+  return (
+    <div className="w-full sm:w-96 grid grid-flow-row auto-rows-min gap-y-4">
+      <div className="w-full">
+        <h3 className="text-xl lg:text-2xl">¿Cuál debería ser mi salario?</h3>
+      </div>
+
+      <div className="w-full">
+        <p className="mb-2">Fecha de la última actualización de salario</p>
+        <div className="w-full grid sm:grid-flow-col sm:auto-cols-auto gap-y-4 sm:gap-x-4">
+          <select className="border-teal-600" value={ year } onChange={ setProperty(setYear, parseInt) }>
+            { years.map(y => (<option key={ y } value={ y }>{ y }</option>)) }
+          </select>
+
+          <select className="border-teal-600" value={ month } onChange={ setProperty(setMonth, parseInt) }>
+            { months.map(m => (<option key={ m } value={ m }>{ monthName(m) }</option>)) }
+          </select>
+        </div>
+      </div>
+
+      <div className="w-full">
+        <p className="mb-2">Monto salarial</p>
+        <input type="number" className="w-full text-right border-teal-600" value={ salary } onChange={ setProperty(setSalary, R.unless(R.isEmpty, parseFloat)) }/>
+      </div>
+
+      <div className="w-full">
+        <p className="text-sm text-stone-600 italic">Los datos son enviados anónimamente de manera segura y no existe registro alguno de ellos. Aún así, puedes hacer el cálculo manualmente.</p>
+      </div>
+
+      <div className="w-full">
+        <details className="text-sm text-stone-600">
+          <summary className="text-black mb-2">¿Cómo calcular manualmente?</summary>
+          <ol className="list-disc list-inside">
+            <li className="mb-1">Introduce el año y mes de la última actualización o aumento de salario que has obtenido.</li>
+            <li className="mb-1">En salario percibido deja el valor 1, que equivale a 1 MXN.</li>
+            <li className="mb-1">Da clic en calcular.</li>
+            <li className="mb-1">Multiplica tu salario real por el salario que deberías estar recibiendo.</li>
+          </ol>
+        </details>
+      </div>
+      <div className="w-full">
+
+        <button type="button" className="w-full mt-8 px-6 py-2 bg-teal-600 hover:bg-teal-700 active:bg-teal-800 active:ring text-white drop-shadow-md font-medium">Calcular</button>
       </div>
     </div>
-    <div className="w-full">
-      <p>Salario</p>
-      <input type="number" className="w-full text-right border-emerald-600" />
-    </div>
-    <div className="w-full">
-      <button type="button" className="w-full mt-8 px-6 py-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 active:ring text-white drop-shadow-md font-medium">Calcular</button>
-    </div>
-  </div>
-);
+  );
+};
 
 export default SalaryCalculator;
