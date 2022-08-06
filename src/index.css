@@ -13,6 +13,10 @@ input[type=number] {
     -moz-appearance:textfield; /* Firefox */
 }
 
+* {
+  font-family: 'Lato', sans-serif;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
