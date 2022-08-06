@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 import { useState, useEffect } from 'react';
 
-const SalaryCalculator = () => {
+const SalaryCalculator = ({ onSubmit }) => {
   // Constants
   const EARLIEST_YEAR = 1969;
 
@@ -9,7 +9,12 @@ const SalaryCalculator = () => {
   const setProperty = R.curry((setter, transform = R.identity) => R.compose(setter, transform, R.path(['target', 'value'])));
   const monthName = R.compose(R.invoker(2, 'toLocaleString')('default', { month: 'long' }), R.constructN(2, Date)(EARLIEST_YEAR));
 
+  // Handlers
+  const handleSubmit = () => onSubmit(date, salary);
+
   // States
+  const [invalidState, setInvalidState] = useState(true);
+  const [date, setDate] = useState(null);
   const [years, setYears] = useState([]);
   const months = R.range(0, 12);
   const [year, setYear] = useState('');
@@ -18,7 +23,16 @@ const SalaryCalculator = () => {
 
   // Efects
   // Set years
-  useEffect(() => { R.compose(setYears, R.reverse, R.range(EARLIEST_YEAR), R.add(1), R.invoker(0, 'getFullYear'), R.constructN(0, Date))() }, []);
+  useEffect(() => {
+    R.compose(
+      setYears,
+      R.reverse,
+      R.range(EARLIEST_YEAR),
+      R.add(1),
+      R.invoker(0, 'getFullYear'),
+      R.constructN(0, Date)
+    )()
+  }, []);
 
   // Set year
   useEffect(() => { R.compose(setYear, R.head)(years) }, [years]);
@@ -33,7 +47,16 @@ const SalaryCalculator = () => {
   }, [year, month]);
 
   // Set salary
-  useEffect(() => { R.when(R.both(R.complement(R.isEmpty), R.lte(R.__, 0)), R.compose(setSalary, R.negate))(salary) }, [salary]);
+  useEffect(() => {
+    R.when(R.both(R.complement(R.isEmpty), R.lte(R.__, 0)), R.compose(setSalary, R.negate))(salary);
+    R.compose(setInvalidState, R.isEmpty)(salary);
+  }, [salary]);
+
+  // Set date
+  useEffect(() => {
+    const formatMonth = R.compose(R.invoker(2, 'padStart')(2, '0'), R.toString, R.add(1));
+    setDate(`${year}-${formatMonth(month)}-01`);
+  }, [year, month]);
 
   // Render
   return (
@@ -75,9 +98,15 @@ const SalaryCalculator = () => {
           </ol>
         </details>
       </div>
-      <div className="w-full">
 
-        <button type="button" className="w-full mt-8 px-6 py-2 bg-teal-600 hover:bg-teal-700 active:bg-teal-800 active:ring text-white drop-shadow-md font-medium">Calcular</button>
+      <div className="w-full">
+        <button
+          disabled={ invalidState }
+          onClick={ handleSubmit }
+          type="button"
+          className="w-full mt-4 px-6 py-4 sm:py-2 bg-teal-600 disabled:bg-stone-500 disabled:cursor-not-allowed hover:bg-teal-700 active:bg-teal-800 active:ring text-white drop-shadow-md font-bold">
+          Calcular
+        </button>
       </div>
     </div>
   );
