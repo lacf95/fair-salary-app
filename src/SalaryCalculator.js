@@ -100,7 +100,11 @@ const SalaryCalculator = () => {
       </div>
 
       <div className="w-full">
-        <p>Tu salario ajustado a la inflación debería ser <span className="font-bold">{ result.adjustedSalary.toFixed(2) } MXN</span>.</p>
+        <p>Tu salario ajustado a la inflación debería ser de <span className="font-bold">{ result.adjustedSalary.toFixed(2) } MXN</span>.</p>
+      </div>
+
+      <div className="w-full">
+        <p className="text-sm">Desde { monthName(month) } de { year } ha habido una inflación del <span className="font-bold">{ result.inflationRate.toFixed(2) }%</span> y para recuperar tu capacidad de compra es necesario un aumento de { result.adjustment.toFixed(2) }.</p>
       </div>
 
       <ManualInstructions />

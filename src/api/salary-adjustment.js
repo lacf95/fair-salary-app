@@ -16,6 +16,6 @@ const salaryAdjustment = async body => (composeAsync([
   R.prop('salaryAdjustment'),
   R.invoker(0, 'json'),
   callAPI
-])('salary-adjustment', { method: 'POST', body: JSON.stringify(body) }));
+])('salary-adjustments', { method: 'POST', body: JSON.stringify(body) }));
 
 export default salaryAdjustment;
