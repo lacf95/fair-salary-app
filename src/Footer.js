@@ -4,7 +4,9 @@ import { useEffect, useState } from 'react';
 import lastMonthlyInflation from './api/monthly-inflation.js';
 
 const Footer = () => {
-  const [lastRate, setLastRate] = useState({});
+  const [lastRate, setLastRate] = useState({
+    date: ''
+  });
 
   const monthName = R.compose(R.invoker(2, 'toLocaleString')('default', { month: 'long' }), R.constructN(2, Date)(2000));
 
