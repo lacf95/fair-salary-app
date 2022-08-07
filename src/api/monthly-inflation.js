@@ -12,10 +12,10 @@ const mergeOptions = R.mergeDeepWith(R.concat, baseOptions);
 
 const callAPI = async (action, options = {}) => fetch(`${process.env.REACT_APP_API_URL}/${action}`, mergeOptions(options));
 
-const salaryAdjustment = async body => (composeAsync([
-  R.prop('salaryAdjustment'),
+const lastMonthlyInflation = async () => (composeAsync([
+  R.prop('monthlyInflationRate'),
   R.invoker(0, 'json'),
   callAPI
-])('salary-adjustments', { method: 'POST', body: JSON.stringify(body) }));
+])('monthly-inflations/last', { method: 'GET' }));
 
-export default salaryAdjustment;
+export default lastMonthlyInflation;

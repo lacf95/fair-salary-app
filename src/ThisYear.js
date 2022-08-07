@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import salaryAdjustment from './api/salary-adjustment';
+import salaryAdjustment from './api/salary-adjustment.js';
 
 const ThisYear = () => {
   // Constants
