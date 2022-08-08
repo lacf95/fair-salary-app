@@ -96,7 +96,7 @@ const SalaryCalculator = () => {
   const Result = () => (
     <div className="w-full sm:w-96 grid grid-flow-row auto-rows-min gap-y-4">
       <div className="w-full">
-        <h3 className="text-xl lg:text-2xl">Has perdido el <span className="font-bold">{ result.inflationRate.toFixed(2) }%</span> de tu capacidad de compra.</h3>
+        <h3 className="text-xl lg:text-2xl">Has perdido el <span className="font-bold">{ result.inflationRate.toFixed(2) }%</span> de tu poder adquisitivo.</h3>
       </div>
 
       <div className="w-full">
@@ -104,7 +104,7 @@ const SalaryCalculator = () => {
       </div>
 
       <div className="w-full">
-        <p className="text-sm">Desde { monthName(month) } de { year } ha habido una inflación del <span className="font-bold">{ result.inflationRate.toFixed(2) }%</span> y para recuperar tu capacidad de compra es necesario un aumento de { result.adjustment.toFixed(2) }.</p>
+        <p className="text-sm">Desde { monthName(month) } de { year } ha habido una inflación del <span className="font-bold">{ result.inflationRate.toFixed(2) }%</span> y para recuperar tu poder adquisitivo es necesario un aumento de { result.adjustment.toFixed(2) }.</p>
       </div>
 
       <ManualInstructions />
