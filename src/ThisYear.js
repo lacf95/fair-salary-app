@@ -18,7 +18,7 @@ const ThisYear = () => {
 
   useEffect(() => {
     lastMonthlyInflation().then(res => {
-      const date = new Date(getYear(res.date), getMonth(res.date) + 1);
+      const date = new Date(getYear(res.date), getMonth(res.date));
       date.setFullYear(date.getFullYear() - 1);
       date.setDate(1);
       const salary = DEFAULT_SALARY;
